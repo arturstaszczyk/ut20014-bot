@@ -38,8 +38,7 @@ public class RunToBehaviour extends Behaviour {
         Location botPosition = mBot.getBot().getLocation();
         
         if(Location.getDistanceSquare(mTarget.getLocation(), botPosition) < (200  * 200))
-            for(IBehaviourFinishedListener listener : mListeners)
-                listener.onBehaviourFinished(this);
+            endBehaviour();
     }
 
     @Override

@@ -15,6 +15,7 @@ import cz.cuni.amis.utils.exception.PogamutException;
 import pl.staszczyk.mysimplebot1.behaviours.BehaviourExecutor;
 import pl.staszczyk.mysimplebot1.behaviours.IBehaviourChangeListener;
 import pl.staszczyk.mysimplebot1.behaviours.implementations.DodgeBehaviour;
+import pl.staszczyk.mysimplebot1.behaviours.implementations.FightBehaviour;
 import pl.staszczyk.mysimplebot1.behaviours.implementations.RunToBehaviour;
 import pl.staszczyk.mysimplebot1.behaviours.implementations.StayBehaviour;
 
@@ -77,6 +78,7 @@ public class EmptyBot extends UT2004BotModuleController implements IBehaviourCha
         
         log.log(Level.INFO, "Found player: " + event.getObject().getName());
         Player player = event.getObject();
+        mBehaviourExecutor.replaceBehaviour(new FightBehaviour(this));
     }
 
     @Override

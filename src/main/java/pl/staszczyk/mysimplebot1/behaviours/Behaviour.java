@@ -36,4 +36,10 @@ public abstract class Behaviour {
         if(mListeners.contains(listener))
             mListeners.remove(listener);
     }
+    
+    protected void endBehaviour()
+    {
+        for(IBehaviourFinishedListener listener : mListeners)
+                listener.onBehaviourFinished(this);
+    }
 }
