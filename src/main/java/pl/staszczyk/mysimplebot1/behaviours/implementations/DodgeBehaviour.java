@@ -17,6 +17,7 @@
 package pl.staszczyk.mysimplebot1.behaviours.implementations;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.ut2004.bot.IUT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import java.util.Comparator;
@@ -70,7 +71,7 @@ public class DodgeBehaviour extends Behaviour
 
     public DodgeBehaviour(UT2004BotModuleController bot, SpaceAwareness spaceAwerness)
     {
-        super(bot);
+        super(bot, Behaviour.BehaviourCategory.FLEEING);
 
         mSpaceAwerness = spaceAwerness;
         mPossibleDodges = new PriorityQueue<DistanceToDirection>(5, new DistanceToDirectionComparator());
@@ -79,13 +80,14 @@ public class DodgeBehaviour extends Behaviour
     @Override
     public String toString()
     {
-        return "DodgeBehaviour";
+        return "++DODGE++";
     }
-
+    
     @Override
     public void onBegin()
     {
         mDodgePlayer = mBot.getPlayers().getNearestEnemy(5000);
+        mBot.getConfig().setName("Stasiu [" + toString() + "]");
     }
 
     @Override

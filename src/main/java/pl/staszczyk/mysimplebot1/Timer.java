@@ -39,9 +39,19 @@ public class Timer {
         mLastLogicTime = currTime;
     }
     
-    public long dt()
+    public long getDT()
     {
         return mLastDT;
+    }
+    
+    public long getTimestamp()
+    {
+        return System.currentTimeMillis();
+    }
+    
+    public long getMillisecondsSince(long timestamp)
+    {
+        return getTimestamp() - timestamp;
     }
     
 }

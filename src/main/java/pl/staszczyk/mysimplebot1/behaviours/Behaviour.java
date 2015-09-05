@@ -13,14 +13,45 @@ public abstract class Behaviour {
     protected List<IBehaviourFinishedListener> mListeners = new LinkedList<IBehaviourFinishedListener>();
 
     protected UT2004BotModuleController mBot;
+    private BehaviourCategory mCategory;
+    private boolean mUnbreakable;
+
+    public enum BehaviourCategory
+    {
+        ATTACKING,
+        FLEEING,
+        NEUTRAL
+    }
     
-    public Behaviour(UT2004BotModuleController bot) {
+    public Behaviour(UT2004BotModuleController bot, 
+            BehaviourCategory category, 
+            boolean unbreakable)
+    {
         mBot = bot;
+        mCategory = category;
+        mUnbreakable = unbreakable;
+    }
+    
+    public Behaviour(UT2004BotModuleController bot, 
+            BehaviourCategory category)
+    {
+        mBot = bot;
+        mCategory = category;
+        mUnbreakable = false;
     }
     
     @Override
     public abstract String toString();
     
+    public BehaviourCategory getCategory()
+    {
+        return mCategory;
+    }
+
+    public boolean isUnbreakable()
+    {
+        return mUnbreakable;
+    }    
     public abstract void onBegin();
     public abstract void execute(double dt);
     public abstract void onEnd();

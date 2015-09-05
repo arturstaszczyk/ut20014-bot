@@ -3,6 +3,8 @@ package pl.staszczyk.mysimplebot1;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.Raycasting;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.RemoveRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import cz.cuni.amis.utils.flag.FlagListener;
@@ -62,6 +64,8 @@ public class SpaceAwareness {
     }
     
     public void prepareRays(final Raycasting raycasting) {
+        mBot.getAct().act(new RemoveRay("All"));
+        
         // initialize rays for raycasting
         final int rayLength = (int) (UnrealUtils.CHARACTER_COLLISION_RADIUS * 20);
         // settings for the rays
@@ -82,6 +86,7 @@ public class SpaceAwareness {
         
         raycasting.getAllRaysInitialized().addListener(new FlagListener<Boolean>() {
 
+            @Override
                 public void flagChanged(Boolean changedValue) {
                     for(Direction rayName : mUnitDirectionVectors.keySet()) {
                         mRays.put(rayName, raycasting.getRay(rayName.toString()));
@@ -90,6 +95,8 @@ public class SpaceAwareness {
             });
         
         raycasting.endRayInitSequence();
+        
+        mBot.getAct().act(new Configuration().setDrawTraceLines(true).setAutoTrace(true));
     }
     
     public Location getLocationInDirection(Direction dir)

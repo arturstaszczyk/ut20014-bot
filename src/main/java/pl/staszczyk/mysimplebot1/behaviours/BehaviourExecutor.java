@@ -1,77 +1,166 @@
 package pl.staszczyk.mysimplebot1.behaviours;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
+import pl.staszczyk.mysimplebot1.Timer;
 
 /**
  *
  * @author Artur
  */
-public class BehaviourExecutor implements IBehaviourFinishedListener {
-    
-    private List<IBehaviourChangeListener> mListeners = new LinkedList<IBehaviourChangeListener>();
-    private Behaviour mActiveBehaviour = null;
-    LogCategory mLog = null;
-    
-    public BehaviourExecutor(LogCategory log)
+public class BehaviourExecutor implements IBehaviourFinishedListener
+{
+
+    private List<IBehaviourChangeListener> mListeners;
+    private Behaviour mActiveBehaviour;
+    private BehaviourExecutionHistory mHistory;
+    private BehaviourExecutionQueue mQueue;
+    private Timer mTimer;
+    private LogCategory mLog;
+
+    public Behaviour getActiveBehaviour()
     {
-        mLog = log;
+        return mActiveBehaviour;
     }
     
+    public BehaviourExecutionHistory getExecutionHistory()
+    {
+        return mHistory;
+    }
+
+    public BehaviourExecutor(LogCategory log, Behaviour initialBehaviour)
+    {
+        mHistory = new BehaviourExecutionHistory();
+        mQueue = new BehaviourExecutionQueue();
+
+        mListeners = new LinkedList<IBehaviourChangeListener>();
+        mLog = log;
+
+        mTimer = new Timer();
+
+        startBehaviour(initialBehaviour);
+    }
+
+    public void addBehaviourChangeListener(IBehaviourChangeListener listener)
+    {
+        if (!mListeners.contains(listener))
+        {
+            mListeners.add(listener);
+        }
+    }
+
+    public void removeBehaviourChangeListener(IBehaviourChangeListener listener)
+    {
+        if (mListeners.contains(listener))
+        {
+            mListeners.remove(listener);
+        }
+    }
+
+    public void clearMindSet()
+    {
+        mHistory.clearHistory();
+        mQueue.clearQueue();
+    }
+
+    public boolean isBehaviourExecutedRecently(Class behaviourClass)
+    {
+        boolean hasBehaviour = mHistory.isBehaviourInHistory(behaviourClass);
+        if (mActiveBehaviour.getClass() == behaviourClass)
+        {
+            hasBehaviour = true;
+        }
+
+        return hasBehaviour;
+    }
+
     public void execute(double dt)
     {
         mActiveBehaviour.execute(dt);
     }
+
+    public Class currentBehaviourClass()
+    {
+        Class currentBehaviourClass = null;
+        if (mActiveBehaviour != null)
+        {
+            currentBehaviourClass = mActiveBehaviour.getClass();
+        }
+
+        return currentBehaviourClass;
+    }
+
+    public void queueBehaviour(Behaviour behaviour)
+    {
+        mQueue.addToQueue(behaviour);
+    }
     
+    public boolean hasFightBehaviourPlanned()
+    {
+        return mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.FLEEING) ||
+                mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.ATTACKING);
+    }
+
     public void replaceBehaviour(Behaviour behaviour)
     {
-        stopActivBehaviour();
-        notifyListeners(mActiveBehaviour, behaviour);
+        stopBehaviour(mActiveBehaviour);
+        notifyChangeListeners(mActiveBehaviour, behaviour);
+        startBehaviour(behaviour);
+
+        mQueue.clearQueue();
+    }
+    
+    private void startBehaviour(Behaviour behaviour)
+    {
         mActiveBehaviour = behaviour;
-        startActiveBehaviour();
+        behaviour.addOnFinishedListener(this);
+        behaviour.onBegin();
     }
-    
-    private void stopActivBehaviour() {
-        if(mActiveBehaviour == null)
+
+    private void stopBehaviour(Behaviour behaviour)
+    {
+        if (behaviour == null)
+        {
             return;
-        
-        mActiveBehaviour.removeOnFinishedListener(this);
-        mActiveBehaviour.onEnd();
+        }
+
+        behaviour.removeOnFinishedListener(this);
+        behaviour.onEnd();
+
+        mHistory.storeInHistory(behaviour.getClass(), mTimer.getTimestamp());
     }
 
-    private void startActiveBehaviour() {
-        mActiveBehaviour.addOnFinishedListener(this);
-        mActiveBehaviour.onBegin();
-    }
-    
-    private void notifyListeners(Behaviour active, Behaviour next) {
-        for(IBehaviourChangeListener listener : mListeners)
+    private void notifyChangeListeners(Behaviour active, Behaviour next)
+    {
+        for (IBehaviourChangeListener listener : mListeners)
+        {
             listener.onBehaviourChange(active, next);
-    }
-    
-    public void addBehaviourChangeListener(IBehaviourChangeListener listener)
-    {
-        if(!mListeners.contains(listener))
-            mListeners.add(listener);
-    }
-    
-    public void removeBehaviourChangeListener(IBehaviourChangeListener listener)
-    {
-        if(mListeners.contains(listener))
-            mListeners.remove(listener);
+        }
     }
 
+    private void notifyEndListeners()
+    {
+        for (IBehaviourChangeListener listener : mListeners)
+        {
+            listener.onNoMoreBehaviours();
+        }
+    }
+    
+    // IBehaviourFinishedListener
     @Override
-    public void onBehaviourFinished(Behaviour behaviour) {
+    public void onBehaviourFinished(Behaviour behaviour)
+    {
         mLog.log(Level.INFO, "FINISHED: {0}", behaviour.toString());
 
-        behaviour.onEnd();//moze byc replace
-        
-        for(IBehaviourChangeListener listener : mListeners)
-            listener.onNoMoreBehaviours();
-        
+        Behaviour queuedBehaviour = mQueue.getQueuedBehaviour();
+        if (queuedBehaviour == null)
+        {
+            stopBehaviour(behaviour);
+            notifyEndListeners();
+        } else
+        {
+            replaceBehaviour(queuedBehaviour);
+        }
     }
-
 }

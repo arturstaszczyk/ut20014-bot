@@ -10,15 +10,17 @@ import pl.staszczyk.mysimplebot1.behaviours.Behaviour;
 public class StayBehaviour extends Behaviour {
 
     public StayBehaviour(UT2004BotModuleController bot) {
-        super(bot);
+        super(bot, Behaviour.BehaviourCategory.NEUTRAL);
     }
-
+    
     @Override
     public void onBegin() {
+        mBot.getConfig().setName("Stasiu [" + toString() + "]");
     }
 
     @Override
     public void execute(double dt) {
+        endBehaviour();
     }
 
     @Override
@@ -27,7 +29,7 @@ public class StayBehaviour extends Behaviour {
 
     @Override
     public String toString() {
-        return "StayBehaviour";
+        return "++STAY++";
     }
     
 }
