@@ -64,8 +64,7 @@ public class EmptyBot extends UT2004BotModuleController
             @Override
             public void onNoMoreBehaviours()
             {
-                mBehaviourExecutor.clearMindSet();
-                mBehaviourExecutor.replaceBehaviour(new StayBehaviour(EmptyBot.this));
+                mBehaviourExecutor.clearMindSet(new StayBehaviour(EmptyBot.this));
             }
         });
 
@@ -80,6 +79,7 @@ public class EmptyBot extends UT2004BotModuleController
     @Override
     public void botKilled(BotKilled event)
     {
+        mBehaviourExecutor.clearMindSet(new StayBehaviour(this));
     }
 
     @EventListener(eventClass = BotDamaged.class)

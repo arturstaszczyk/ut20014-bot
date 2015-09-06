@@ -60,10 +60,11 @@ public class BehaviourExecutor implements IBehaviourFinishedListener
         }
     }
 
-    public void clearMindSet()
+    public void clearMindSet(Behaviour behaviour)
     {
         mHistory.clearHistory();
         mQueue.clearQueue();
+        replaceBehaviour(behaviour);
     }
 
     public boolean isBehaviourExecutedRecently(Class behaviourClass)

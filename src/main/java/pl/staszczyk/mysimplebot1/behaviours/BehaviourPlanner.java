@@ -9,6 +9,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoin
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.logging.Level;
 import pl.staszczyk.mysimplebot1.HistoryAndPlanning.NavPointsVisitationHistory;
 import pl.staszczyk.mysimplebot1.SpaceAwareness;
 import pl.staszczyk.mysimplebot1.Timer;
@@ -88,12 +89,17 @@ public class BehaviourPlanner
         {
             if (!executor.hasNeutralBehaviourPlanned())
             {
-                NavPoint runTarget = getNotVisibleRandomItemPoint();
+                NavPoint runTarget = findNotVisibleWeaponPoint(navPointsHistory);
+                if (runTarget == null)
+                {
+                    runTarget = getNotVisibleRandomItemPoint();
+                }
+
                 if (runTarget == null)
                 {
                     runTarget = mBot.getNavPoints().getRandomNavPoint();
                 }
-
+                
                 RunToBehaviour runBehaviour = new RunToBehaviour(mBot,
                                                                  Behaviour.BehaviourCategory.NEUTRAL,
                                                                  false);
@@ -105,7 +111,7 @@ public class BehaviourPlanner
 
     private boolean hasFightingHealth()
     {
-        boolean shoulFight = false;
+        boolean shouldFight = false;
 
         int armor = mBot.getInfo().getArmor();
         int health = mBot.getInfo().getHealth();
@@ -115,14 +121,19 @@ public class BehaviourPlanner
 
         if (health > healthRunTreashold)
         {
-            shoulFight = true;
+            shouldFight = true;
         }
         else if (health < healthRunTreashold && armor > armorRunTreashold)
         {
-            shoulFight = true;
+            shouldFight = true;
+        }
+        
+        if(!shouldFight)
+        {
+            mBot.getLog().log(Level.INFO, "NOT-h:{0}-a:{1}", new Object[]{health, armor});
         }
 
-        return shoulFight;
+        return shouldFight;
     }
 
     public NavPoint findNotVisibleWeaponPoint(NavPointsVisitationHistory history)
