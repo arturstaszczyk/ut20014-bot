@@ -99,7 +99,9 @@ public class BehaviourExecutor implements IBehaviourFinishedListener
     public boolean hasFightBehaviourPlanned()
     {
         return mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.FLEEING) ||
-                mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.ATTACKING);
+                mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.ATTACKING) ||
+                mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.FLEEING ||
+                mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.ATTACKING;
     }
 
     public void replaceBehaviour(Behaviour behaviour)

@@ -37,56 +37,59 @@ public class BehaviourPlanner
     
     public void plan(BehaviourExecutor executor, SpaceAwareness spaceAwerness)
     {
-        executor.getExecutionHistory().forgetOldBehaviours(mTimer);
-        
-        Behaviour behaviour = executor.getActiveBehaviour();
-        if(behaviour.isUnbreakable())
-            return;
-        
-        mBot.getLog().log(Level.INFO, "Searching for new state...");
-        boolean enemyInRange = mBot.getPlayers().canSeeEnemies();
-        
-        if(!hasFightingHealth() && mBot.getWeaponry().hasLoadedWeapon())
-        {
-            if(!executor.isBehaviourExecutedRecently(RunToBehaviour.class) ||
-                    executor.getActiveBehaviour().getClass() == StayBehaviour.class)
-            {
-                NavPoint healthPoint = findNotVisibleHealthPoint();
-                if(healthPoint == null)
-                    healthPoint = getNotVisibleRandomPoint();
-
-                executor.replaceBehaviour(new RunToBehaviour(mBot, 
-                        Behaviour.BehaviourCategory.FLEEING, false).setTarget(healthPoint));
-            }
-        }
-        else if(!enemyInRange || !mBot.getWeaponry().hasLoadedWeapon())
-        {
-            NavPoint weaponPoint = findNotVisibleWeaponPoint();
-            if(weaponPoint == null)
-                weaponPoint = getNotVisibleRandomPoint();
-
-            executor.replaceBehaviour(new RunToBehaviour(mBot, 
-                    Behaviour.BehaviourCategory.FLEEING, 
-                    true).setTarget(weaponPoint));
-        }
-        else if(enemyInRange)
-        {
+//        executor.getExecutionHistory().forgetOldBehaviours(mTimer);
+//        
+//        Behaviour behaviour = executor.getActiveBehaviour();
+//        if(behaviour.isUnbreakable())
+//            return;
+//        
+//        mBot.getLog().log(Level.INFO, "Searching for new state...");
+//        boolean enemyInRange = mBot.getPlayers().canSeeEnemies();
+//        
+//        if(!hasFightingHealth() && mBot.getWeaponry().hasLoadedWeapon())
+//        {
+//            if(!executor.isBehaviourExecutedRecently(RunToBehaviour.class) ||
+//                    executor.getActiveBehaviour().getClass() == StayBehaviour.class)
+//            {
+//                NavPoint healthPoint = findNotVisibleHealthPoint();
+//                if(healthPoint == null)
+//                    healthPoint = getNotVisibleRandomPoint();
+//
+//                executor.replaceBehaviour(new RunToBehaviour(mBot, 
+//                        Behaviour.BehaviourCategory.FLEEING, false).setTarget(healthPoint));
+//            }
+//        }
+//        else if(!enemyInRange || !mBot.getWeaponry().hasLoadedWeapon())
+//        {
+//            if(!executor.isBehaviourExecutedRecently(RunToBehaviour.class))
+//            {
+//                NavPoint weaponPoint = findNotVisibleWeaponPoint();
+//                if(weaponPoint == null)
+//                    weaponPoint = getNotVisibleRandomPoint();
+//
+//                executor.replaceBehaviour(new RunToBehaviour(mBot, 
+//                        Behaviour.BehaviourCategory.FLEEING, 
+//                        true).setTarget(weaponPoint));
+//            }
+//        }
+//        else if(enemyInRange)
+//        {
             if(!executor.hasFightBehaviourPlanned())
             {
                 executor.replaceBehaviour(new FightBehaviour(mBot));
             }
-        }
-        else
-        {
-            if(executor.currentBehaviourClass() != RunToBehaviour.class)
-            {
-                NavPoints navPoints = mBot.getNavPoints();
-                RunToBehaviour runBehaviour = new RunToBehaviour(mBot,
-                        Behaviour.BehaviourCategory.NEUTRAL, false);
-                runBehaviour.setTarget(navPoints.getRandomNavPoint());
-                executor.queueBehaviour(runBehaviour);
-            }
-        }
+//        }
+//        else
+//        {
+//            if(executor.currentBehaviourClass() != RunToBehaviour.class)
+//            {
+//                NavPoints navPoints = mBot.getNavPoints();
+//                RunToBehaviour runBehaviour = new RunToBehaviour(mBot,
+//                        Behaviour.BehaviourCategory.NEUTRAL, false);
+//                runBehaviour.setTarget(navPoints.getRandomNavPoint());
+//                executor.queueBehaviour(runBehaviour);
+//            }
+//        }
     }
     
     private boolean hasFightingHealth()

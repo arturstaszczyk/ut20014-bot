@@ -1,6 +1,5 @@
 package pl.staszczyk.mysimplebot1.behaviours.implementations;
 
-import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.WeaponPrefs;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;

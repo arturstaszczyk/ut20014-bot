@@ -29,7 +29,7 @@ public class EmptyBot extends UT2004BotModuleController
     @Override
     public Initialize getInitializeCommand()
     {
-        return new Initialize().setName("[Stasiu]SuperOsomKillerBot").setSkin("Dominator").setTeam(0).setDesiredSkill(5);
+        return new Initialize().setName("Stasiu").setSkin("Dominator").setTeam(0).setDesiredSkill(5);
     }
 
     @Override
