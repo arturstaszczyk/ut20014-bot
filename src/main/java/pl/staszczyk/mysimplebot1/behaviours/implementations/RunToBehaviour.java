@@ -9,6 +9,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StopShootin
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import java.util.logging.Level;
+import pl.staszczyk.mysimplebot1.LogHelpers;
 import pl.staszczyk.mysimplebot1.WeaponPrefsChooser;
 import pl.staszczyk.mysimplebot1.behaviours.Behaviour;
 
@@ -63,7 +64,7 @@ public class RunToBehaviour extends Behaviour
         handleRandomBehaviour();
         handleVisibleEnemies(nav);
         handleEndBehaviourCondition();
-        setBotDebugName();
+        LogHelpers.setBotDebugName(mTarget, this, mBot);
     }
 
     private void handleVisibleEnemies(IUT2004Navigation nav)
@@ -75,29 +76,12 @@ public class RunToBehaviour extends Behaviour
 
             WeaponPref preferredWeapon = mBot.getWeaponPrefs().getWeaponPreference();
             boolean shotFired = mBot.getShoot().shoot(preferredWeapon, enemy.getId());
-            logShoot(shotFired, preferredWeapon, enemy);
+            LogHelpers.logShoot(mBot.getLog(), preferredWeapon, shotFired, enemy);
         }
         else
         {
             nav.setFocus(null);
             mBot.getAct().act(new StopShooting());
-        }
-    }
-
-    private void logShoot(boolean shotFired, WeaponPref preferredWeapon, Player enemy)
-    {
-        if (shotFired)
-        {
-            String weapoMode = preferredWeapon.isPrimary() ? "PRIMARY" : "SECONDARY";
-            mBot.getLog().log(Level.INFO, "Shooting with {0} at: {1}",
-                              new Object[]
-                    {
-                        weapoMode, enemy.getName().toString()
-                    });
-        }
-        else
-        {
-            mBot.getLog().log(Level.WARNING, "Bot cannot shoot");
         }
     }
 
@@ -119,25 +103,6 @@ public class RunToBehaviour extends Behaviour
         {
             endBehaviour();
         }
-    }
-
-    private void setBotDebugName()
-    {
-        String nodeName = mTarget.getId().toString();
-        if (mTarget.isInvSpot())
-        {
-            nodeName = mTarget.getItemClass().getName();
-        }
-
-        WeaponPref preferredWeapon = mBot.getWeaponPrefs().getWeaponPreference();
-        String activeWeapon = preferredWeapon.getWeapon().getName();
-        int primaryAmmoLeft = mBot.getWeaponry().getCurrentPrimaryAmmo();
-        int secondaryAmmoLeft = mBot.getWeaponry().getCurrentAlternateAmmo();
-
-        mBot.getConfig().setName("[" + toString() + "]-["
-                + getCategory().toString() + "]-["
-                + nodeName + "]-["
-                + activeWeapon + ":" + primaryAmmoLeft + "+" + secondaryAmmoLeft + "]");
     }
 
     @Override
