@@ -2,19 +2,16 @@ package pl.staszczyk.mysimplebot1.behaviours;
 
 import SpaceAndTimeHelpers.DistanceToNavPoint;
 import SpaceAndTimeHelpers.DistanceToNavPointComparator;
-import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavPoints;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.logging.Level;
+import pl.staszczyk.mysimplebot1.HistoryAndPlanning.NavPointsVisitationHistory;
 import pl.staszczyk.mysimplebot1.SpaceAwareness;
 import pl.staszczyk.mysimplebot1.Timer;
-import pl.staszczyk.mysimplebot1.behaviours.implementations.FightBehaviour;
 import pl.staszczyk.mysimplebot1.behaviours.implementations.RunToBehaviour;
-import pl.staszczyk.mysimplebot1.behaviours.implementations.StayBehaviour;
 
 /**
  *
@@ -35,7 +32,9 @@ public class BehaviourPlanner
         mBot = bot;
     }
     
-    public void plan(BehaviourExecutor executor, SpaceAwareness spaceAwerness)
+    public void plan(BehaviourExecutor executor, 
+                     NavPointsVisitationHistory navPointsHistory,
+                     SpaceAwareness spaceAwerness)
     {
 //        executor.getExecutionHistory().forgetOldBehaviours(mTimer);
 //        
@@ -61,23 +60,23 @@ public class BehaviourPlanner
 //        }
 //        else if(!enemyInRange || !mBot.getWeaponry().hasLoadedWeapon())
 //        {
-//            if(!executor.isBehaviourExecutedRecently(RunToBehaviour.class))
-//            {
-//                NavPoint weaponPoint = findNotVisibleWeaponPoint();
-//                if(weaponPoint == null)
-//                    weaponPoint = getNotVisibleRandomPoint();
-//
-//                executor.replaceBehaviour(new RunToBehaviour(mBot, 
-//                        Behaviour.BehaviourCategory.FLEEING, 
-//                        true).setTarget(weaponPoint));
-//            }
+            if(!executor.isBehaviourExecutedRecently(RunToBehaviour.class))
+            {
+                NavPoint weaponPoint = findNotVisibleWeaponPoint();
+                if(weaponPoint == null)
+                    weaponPoint = getNotVisibleRandomPoint();
+
+                executor.replaceBehaviour(new RunToBehaviour(mBot, 
+                        Behaviour.BehaviourCategory.FLEEING, 
+                        true).setTarget(weaponPoint));
+            }
 //        }
 //        else if(enemyInRange)
 //        {
-            if(!executor.hasFightBehaviourPlanned())
-            {
-                executor.replaceBehaviour(new FightBehaviour(mBot));
-            }
+//            if(!executor.hasFightBehaviourPlanned())
+//            {
+//                executor.replaceBehaviour(new FightBehaviour(mBot));
+//            }
 //        }
 //        else
 //        {

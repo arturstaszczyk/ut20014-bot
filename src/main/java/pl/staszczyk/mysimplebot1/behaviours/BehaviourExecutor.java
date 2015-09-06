@@ -1,5 +1,7 @@
 package pl.staszczyk.mysimplebot1.behaviours;
 
+import pl.staszczyk.mysimplebot1.HistoryAndPlanning.BehaviourExecutionHistory;
+import pl.staszczyk.mysimplebot1.HistoryAndPlanning.BehaviourExecutionQueue;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import java.util.*;
 import java.util.logging.Level;

@@ -20,7 +20,7 @@ public class FightBehaviour extends Behaviour
     Player mEnemy = null;
     Random mRand = new Random();
     RandomBotCommand mRandomCommand = new RandomBotCommand(1000);
-    private static double DISTANCE = 100;
+    private static double DISTANCE = 150;
 
     public FightBehaviour(UT2004BotModuleController bot)
     {

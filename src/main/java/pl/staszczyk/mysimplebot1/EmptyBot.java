@@ -1,5 +1,6 @@
 package pl.staszczyk.mysimplebot1;
 
+import cz.cuni.amis.introspection.java.JProp;
 import pl.staszczyk.mysimplebot1.behaviours.Behaviour;
 import java.util.logging.Level;
 
@@ -12,6 +13,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.*;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.*;
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
+import pl.staszczyk.mysimplebot1.HistoryAndPlanning.NavPointsVisitationHistory;
 import pl.staszczyk.mysimplebot1.behaviours.BehaviourExecutor;
 import pl.staszczyk.mysimplebot1.behaviours.BehaviourPlanner;
 import pl.staszczyk.mysimplebot1.behaviours.IBehaviourChangeListener;
@@ -24,6 +26,7 @@ public class EmptyBot extends UT2004BotModuleController
     private Timer mTimer = new Timer();
     private BehaviourPlanner mPlanner;
     private BehaviourExecutor mBehaviourExecutor;
+    NavPointsVisitationHistory mNavPointsHistory;
     private SpaceAwareness mSpaceAwareness;
 
     @Override
@@ -70,6 +73,8 @@ public class EmptyBot extends UT2004BotModuleController
 
         mSpaceAwareness = new SpaceAwareness(bot);
         mSpaceAwareness.prepareRays(raycasting);
+        
+        mNavPointsHistory = new NavPointsVisitationHistory();
     }
 
     @Override
@@ -101,6 +106,7 @@ public class EmptyBot extends UT2004BotModuleController
 
         mPlanner.plan(mBehaviourExecutor, mSpaceAwareness);
         mBehaviourExecutor.execute(mTimer.getDT());
+        mNavPointsHistory.updateNavigationHistory(this);
     }
 
     public static void main(String args[]) throws PogamutException

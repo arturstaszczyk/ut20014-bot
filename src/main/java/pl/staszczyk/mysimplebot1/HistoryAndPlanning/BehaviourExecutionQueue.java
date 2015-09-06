@@ -1,7 +1,8 @@
-package pl.staszczyk.mysimplebot1.behaviours;
+package pl.staszczyk.mysimplebot1.HistoryAndPlanning;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import pl.staszczyk.mysimplebot1.behaviours.Behaviour;
 
 /**
  *
