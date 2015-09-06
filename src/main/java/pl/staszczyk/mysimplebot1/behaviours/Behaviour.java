@@ -18,6 +18,7 @@ public abstract class Behaviour {
 
     public enum BehaviourCategory
     {
+        NONE,
         ATTACKING,
         FLEEING,
         NEUTRAL

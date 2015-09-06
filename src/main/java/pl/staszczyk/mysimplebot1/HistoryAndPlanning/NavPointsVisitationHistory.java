@@ -29,6 +29,24 @@ public class NavPointsVisitationHistory
         mNavPointsHistory = new PriorityQueue<TimeOfItem<NavPoint>>(16, new TimeOfItemComparator());
     }
 
+    public boolean isInHistory(NavPoint navPoint)
+    {
+        boolean isPresent = false;
+        
+        Iterator<TimeOfItem<NavPoint>> iter = mNavPointsHistory.iterator();
+        while(iter.hasNext())
+        {
+            TimeOfItem<NavPoint> navPointHistory = iter.next();
+            if(navPointHistory.itemOccurance.getId() == navPoint.getId())
+            {
+                isPresent = true;
+                break;
+            }
+        }
+        
+        return isPresent;
+    }
+    
     public void updateNavigationHistory(UT2004BotModuleController botController)
     {
         checkForNewNavPoint(botController);
@@ -49,8 +67,6 @@ public class NavPointsVisitationHistory
             return;
         }
 
-        //botController.getLog().log(Level.INFO, "Adding " + nearestPoint.getId());
-        
         double distance = botController.getBot().getLocation().getDistance(nearestPoint.getLocation());
         if (distance < DISTANCE_TREASHOLD)
         {

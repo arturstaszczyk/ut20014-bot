@@ -10,7 +10,7 @@ import pl.staszczyk.mysimplebot1.behaviours.Behaviour;
 public class StayBehaviour extends Behaviour {
 
     public StayBehaviour(UT2004BotModuleController bot) {
-        super(bot, Behaviour.BehaviourCategory.NEUTRAL);
+        super(bot, Behaviour.BehaviourCategory.NONE);
     }
     
     @Override

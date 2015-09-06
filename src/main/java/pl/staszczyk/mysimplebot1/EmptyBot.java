@@ -104,13 +104,14 @@ public class EmptyBot extends UT2004BotModuleController
     {
         mTimer.update(log);
 
-        mPlanner.plan(mBehaviourExecutor, mSpaceAwareness);
-        mBehaviourExecutor.execute(mTimer.getDT());
         mNavPointsHistory.updateNavigationHistory(this);
+
+        mPlanner.plan(mBehaviourExecutor, mNavPointsHistory, mSpaceAwareness);
+        mBehaviourExecutor.execute(mTimer.getDT());
     }
 
     public static void main(String args[]) throws PogamutException
     {
-        new UT2004BotRunner(EmptyBot.class, "EmptyBot").setHost("localhost").setMain(true).startAgent();
+        new UT2004BotRunner(EmptyBot.class, "EmptyBot").setHost("localhost").setMain(true).startAgents(5);
     }
 }

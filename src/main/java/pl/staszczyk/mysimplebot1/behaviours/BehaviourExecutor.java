@@ -79,6 +79,7 @@ public class BehaviourExecutor implements IBehaviourFinishedListener
 
     public void execute(double dt)
     {
+        mHistory.forgetOldBehaviours(mTimer);
         mActiveBehaviour.execute(dt);
     }
 
@@ -95,6 +96,7 @@ public class BehaviourExecutor implements IBehaviourFinishedListener
 
     public void queueBehaviour(Behaviour behaviour)
     {
+        mLog.log(Level.INFO, "Queued behaviour {0}", behaviour);
         mQueue.addToQueue(behaviour);
     }
     
@@ -105,9 +107,23 @@ public class BehaviourExecutor implements IBehaviourFinishedListener
                 mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.FLEEING ||
                 mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.ATTACKING;
     }
+    
+    public boolean hasFleeingBehaviourPlanned()
+    {
+        return mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.FLEEING) ||
+                mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.FLEEING;
+    }
+    
+    public boolean hasNeutralBehaviourPlanned()
+    {
+        return mQueue.hasBehaviourCategory(Behaviour.BehaviourCategory.NEUTRAL) ||
+                mActiveBehaviour.getCategory() == Behaviour.BehaviourCategory.NEUTRAL;
+    }
 
     public void replaceBehaviour(Behaviour behaviour)
     {
+        mLog.log(Level.INFO, "Replaced behaviour with {0}", behaviour);
+        
         stopBehaviour(mActiveBehaviour);
         notifyChangeListeners(mActiveBehaviour, behaviour);
         startBehaviour(behaviour);

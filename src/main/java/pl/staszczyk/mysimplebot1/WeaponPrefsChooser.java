@@ -19,6 +19,5 @@ public class WeaponPrefsChooser
         prefs.addGeneralPref(UT2004ItemType.FLAK_CANNON, true);
         prefs.addGeneralPref(UT2004ItemType.MINIGUN, false);
         prefs.addGeneralPref(UT2004ItemType.ASSAULT_RIFLE, true); 
-        prefs.addGeneralPref(UT2004ItemType.SHIELD_GUN, false);
     }
 }
